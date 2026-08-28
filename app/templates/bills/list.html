@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Gastos - LaFimeLista{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Gastos</h1>
+  <a class="btn" href="{{ url_for('bills.create_bill') }}"> Recibo nuevo </a>
+  <a class="btn" href=""> Regresar</a>
+</div>
+
+<form method="get" class="filters">
+  <select name="status" onchange="this.form.submit()">
+    <option value="">Todos los status</option>
+    <option value="Pendiente" {% if request.args.get('status') == 'Pending pagar' %}selected{% endif %}>Pendiente pagar</option>
+    <option value="Pagado" {% if request.args.get('status') == 'Paid' %}selected{% endif %}>Pagado</option>
+  </select>
+  <select name="category_id" onchange="this.form.submit()">
+    <option value="">Todas las categorias</option>
+    {% for c in categories %}
+    <option value="{{ c.id }}" {% if request.args.get('category_id', type=int) == c.id %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<table class="data-table">
+  <thead>
+    <tr><th>Nombre</th><th>Cantidad</th><th>Categoria</th><th>Fecha de pago</th><th>Estado:</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for b in bills %}
+    <tr class="{{ 'row-overdue' if b.is_overdue else ('row-due-soon' if b.is_due_soon() else '') }}">
+      <td>{{ b.name }}</td>
+      <td>${{ "%.2f"|format(b.amount) }}</td>
+      <td>
+        {% if b.category %}<span class="tag" style="background: {{ b.category.color }}">{{ b.category.name }}</span>{% else %}—{% endif %}
+      </td>
+      <td>{{ b.due_date.strftime('%Y-%m-%d') }}</td>
+      <td>{{ b.status }}</td>
+      <td>
+        <a href="{{ url_for('bills.edit_bill', bill_id=b.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('bills.delete_bill', bill_id=b.id) }}" style="display:inline" onsubmit="return confirm('Borrar este recibo?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="link-btn">Borrar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">Sin recibos!</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

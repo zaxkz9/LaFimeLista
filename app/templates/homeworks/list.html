@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Tareas — LaFimeLista{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Tareas</h1>
+  <a class="btn" href="{{ url_for('homeworks.create_homework') }}"> Nueva Tarea</a>
+  <a class="btn" href=""> Regresar</a>
+</div>
+
+<form method="get" class="filters">
+  <select name="status" onchange="this.form.submit()">
+    <option value="">Todos los status</option>
+    <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>Pendiente</option>
+    <option value="done" {% if request.args.get('status') == 'done' %}selected{% endif %}>Terminada</option>
+  </select>
+  <select name="category_id" onchange="this.form.submit()">
+    <option value="">Todas las categorias</option>
+    {% for c in categories %}
+    <option value="{{ c.id }}" {% if request.args.get('category_id', type=int) == c.id %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<table class="data-table">
+  <thead>
+    <tr><th>Titulo</th><th>Materia</th><th>Categoria</th><th>Fecha de Entrega</th><th>Estado</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for h in homeworks %}
+    <tr class="{{ 'row-overdue' if h.is_overdue else ('row-due-soon' if h.is_due_soon() else '') }}">
+      <td>{{ h.title }}</td>
+      <td>{{ h.subject or '—' }}</td>
+      <td>
+        {% if h.category %}<span class="tag" style="background: {{ h.category.color }}">{{ h.category.name }}</span>{% else %}—{% endif %}
+      </td>
+      <td>{{ h.due_date.strftime('%Y-%m-%d') }}</td>
+      <td>{{ h.status }}</td>
+      <td>
+        <a href="{{ url_for('homeworks.edit_homework', homework_id=h.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('homeworks.delete_homework', homework_id=h.id) }}" style="display:inline" onsubmit="return confirm('Borrar tarea?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="link-btn">Borrar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">Ninguna tarea pendiente.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

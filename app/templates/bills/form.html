@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — LaFimeLista{% endblock %}
+{% block content %}
+<h1>{{ Titulo }}</h1>
+<form method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <div class="field">
+    {{ form.name.label }} {{ form.name(size=40) }}
+    {% for error in form.name.errors %}<span class="error">{{ error }}</span>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.amount.label }} {{ form.amount() }}
+    {% for error in form.amount.errors %}<span class="error">{{ error }}</span>{% endfor %}
+  </div>
+  <div class="field">{{ form.category_id.label }} {{ form.category_id() }}</div>
+  <div class="field">
+    {{ form.due_date.label }} {{ form.due_date() }}
+    {% for error in form.due_date.errors %}<span class="error">{{ error }}</span>{% endfor %}
+  </div>
+  <div class="field">{{ form.status.label }} {{ form.status() }}</div>
+  {{ form.submit(class="btn") }}
+</form>
+{% endblock %}
