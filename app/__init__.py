@@ -16,7 +16,7 @@ def create_app(config_name=None):
     login_manager.init_app(app)
     csrf.init_app(app)
 
-    from app.models import User, Category, Homework, Bill  # noqa: F401
+    from app.models import User, Homework, Bill  # noqa: F401
 
     @login_manager.user_loader
     def load_user(user_id):

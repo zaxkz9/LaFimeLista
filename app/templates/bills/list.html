@@ -1,26 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Gastos - LaFimeLista{% endblock %}
 {% block content %}
+<style>
+  .div a{
+    margin: 20px;
+  }
+</style>
 <div class="page-header">
-  <h1>Gastos</h1>
+  <h1>Recibos</h1>
   <a class="btn" href="{{ url_for('bills.create_bill') }}"> Recibo nuevo </a>
-  <a class="btn" href=""> Regresar</a>
 </div>
 
 <form method="get" class="filters">
   <select name="status" onchange="this.form.submit()">
     <option value="">Todos los status</option>
-    <option value="Pendiente" {% if request.args.get('status') == 'Pending pagar' %}selected{% endif %}>Pendiente pagar</option>
-    <option value="Pagado" {% if request.args.get('status') == 'Paid' %}selected{% endif %}>Pagado</option>
+    <option value="unpaid" {% if request.args.get('status') == 'unpaid' %}selected{% endif %}>Pendiente pagar</option>
+    <option value="paid" {% if request.args.get('status') == 'paid' %}selected{% endif %}>Pagado</option>
   </select>
-  <select name="category_id" onchange="this.form.submit()">
+  <select name="category" onchange="this.form.submit()">
     <option value="">Todas las categorias</option>
     {% for c in categories %}
-    <option value="{{ c.id }}" {% if request.args.get('category_id', type=int) == c.id %}selected{% endif %}>{{ c.name }}</option>
+    <option value="{{ c }}" {% if request.args.get('category') == c %}selected{% endif %}>{{ c }}</option>
     {% endfor %}
   </select>
 </form>
-
+<div ckass="table-card">
 <table class="data-table">
   <thead>
     <tr><th>Nombre</th><th>Cantidad</th><th>Categoria</th><th>Fecha de pago</th><th>Estado:</th><th></th></tr>
@@ -31,7 +35,7 @@
       <td>{{ b.name }}</td>
       <td>${{ "%.2f"|format(b.amount) }}</td>
       <td>
-        {% if b.category %}<span class="tag" style="background: {{ b.category.color }}">{{ b.category.name }}</span>{% else %}—{% endif %}
+        {% if b.category %}<span class="tag" style="background: {{ category_colors.get(b.category, '#6b7280') }}">{{ b.category }}</span>{% else %}—{% endif %}
       </td>
       <td>{{ b.due_date.strftime('%Y-%m-%d') }}</td>
       <td>{{ b.status }}</td>
@@ -48,4 +52,8 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
+<div class="page-footer">
+  <a class="btn" href="{{ url_for('main.dashboard') }}">Regresar</a>
+</div>
 {% endblock %}

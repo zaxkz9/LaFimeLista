@@ -14,11 +14,11 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        if User.query.filter_by(email=form.email.data.lower()).first():
-            flash("Ya existe una cuenta con este correo.", "danger")
+        if User.query.filter_by(username=form.username.data.lower()).first():
+            flash("Ya existe una cuenta con este usuario.", "danger")
             return render_template("auth/register.html", form=form)
 
-        user = User(name=form.name.data, email=form.email.data.lower())
+        user = User(name=form.name.data, username=form.username.data.lower())
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -37,9 +37,9 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data.lower()).first()
+        user = User.query.filter_by(username=form.username.data.lower()).first()
         if user is None or not user.check_password(form.password.data):
-            flash("Email o contraseña invalidos.", "danger")
+            flash("Usuario o contraseña invalidos.", "danger")
             return render_template("auth/login.html", form=form)
 
         login_user(user)

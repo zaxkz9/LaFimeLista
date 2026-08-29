@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Tareas — LaFimeLista{% endblock %}
 {% block content %}
+<style>
+  .acciones {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+</style>
 <div class="page-header">
   <h1>Tareas</h1>
   <a class="btn" href="{{ url_for('homeworks.create_homework') }}"> Nueva Tarea</a>
-  <a class="btn" href=""> Regresar</a>
 </div>
 
 <form method="get" class="filters">
@@ -13,14 +19,14 @@
     <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>Pendiente</option>
     <option value="done" {% if request.args.get('status') == 'done' %}selected{% endif %}>Terminada</option>
   </select>
-  <select name="category_id" onchange="this.form.submit()">
+  <select name="category" onchange="this.form.submit()">
     <option value="">Todas las categorias</option>
     {% for c in categories %}
-    <option value="{{ c.id }}" {% if request.args.get('category_id', type=int) == c.id %}selected{% endif %}>{{ c.name }}</option>
+    <option value="{{ c }}" {% if request.args.get('category') == c %}selected{% endif %}>{{ c }}</option>
     {% endfor %}
   </select>
 </form>
-
+<div class="table-card">
 <table class="data-table">
   <thead>
     <tr><th>Titulo</th><th>Materia</th><th>Categoria</th><th>Fecha de Entrega</th><th>Estado</th><th></th></tr>
@@ -31,16 +37,18 @@
       <td>{{ h.title }}</td>
       <td>{{ h.subject or '—' }}</td>
       <td>
-        {% if h.category %}<span class="tag" style="background: {{ h.category.color }}">{{ h.category.name }}</span>{% else %}—{% endif %}
+        {% if h.category %}<span class="tag" style="background: {{ category_colors.get(h.category, '#6b7280') }}">{{ h.category }}</span>{% else %}—{% endif %}
       </td>
       <td>{{ h.due_date.strftime('%Y-%m-%d') }}</td>
       <td>{{ h.status }}</td>
       <td>
-        <a href="{{ url_for('homeworks.edit_homework', homework_id=h.id) }}">Editar</a>
-        <form method="post" action="{{ url_for('homeworks.delete_homework', homework_id=h.id) }}" style="display:inline" onsubmit="return confirm('Borrar tarea?');">
+      <div class="acciones">
+      <a href="{{ url_for('homeworks.edit_homework', homework_id=h.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('homeworks.delete_homework', homework_id=h.id) }}" style="display:inline" onsubmit="return confirm('Borrar tarea?');">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <button type="submit" class="link-btn">Borrar</button>
+            <button type="submit" class="link-btn">Borrar</button>
         </form>
+      </div>
       </td>
     </tr>
     {% else %}
@@ -48,4 +56,8 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
+<div class="page-footer">
+  <a class="btn" href="{{ url_for('main.dashboard') }}">Regresar</a>
+</div>
 {% endblock %}

@@ -4,17 +4,7 @@ from flask_login import current_user, login_required
 from app.extensions import db
 from app.homeworks import homeworks_bp
 from app.homeworks.forms import HomeworkForm
-from app.models.category import Category
-from app.models.homework import Homework
-
-
-def _category_choices():
-    categories = (
-        Category.query.filter_by(user_id=current_user.id, kind="homework")
-        .order_by(Category.name)
-        .all()
-    )
-    return [(0, "Sin categoría")] + [(c.id, c.name) for c in categories]
+from app.models.homework import HOMEWORK_CATEGORIES, HOMEWORK_CATEGORY_COLORS, Homework
 
 
 @homeworks_bp.route("/")
@@ -26,29 +16,30 @@ def list_homeworks():
     if status in ("pending", "done"):
         query = query.filter_by(status=status)
 
-    category_id = request.args.get("category_id", type=int)
-    if category_id:
-        query = query.filter_by(category_id=category_id)
+    category = request.args.get("category")
+    if category:
+        query = query.filter_by(category=category)
 
     homeworks = query.order_by(Homework.due_date.asc()).all()
-    categories = (
-        Category.query.filter_by(user_id=current_user.id, kind="homework").order_by(Category.name).all()
+    return render_template(
+        "homeworks/list.html",
+        homeworks=homeworks,
+        categories=HOMEWORK_CATEGORIES,
+        category_colors=HOMEWORK_CATEGORY_COLORS,
     )
-    return render_template("homeworks/list.html", homeworks=homeworks, categories=categories)
 
 
 @homeworks_bp.route("/new", methods=["GET", "POST"])
 @login_required
 def create_homework():
     form = HomeworkForm()
-    form.category_id.choices = _category_choices()
 
     if form.validate_on_submit():
         homework = Homework(
             user_id=current_user.id,
             title=form.title.data,
             subject=form.subject.data,
-            category_id=form.category_id.data or None,
+            category=form.category.data or None,
             due_date=form.due_date.data,
             status=form.status.data,
         )
@@ -65,15 +56,11 @@ def create_homework():
 def edit_homework(homework_id):
     homework = Homework.query.filter_by(id=homework_id, user_id=current_user.id).first_or_404()
     form = HomeworkForm(obj=homework)
-    form.category_id.choices = _category_choices()
-
-    if request.method == "GET":
-        form.category_id.data = homework.category_id or 0
 
     if form.validate_on_submit():
         homework.title = form.title.data
         homework.subject = form.subject.data
-        homework.category_id = form.category_id.data or None
+        homework.category = form.category.data or None
         homework.due_date = form.due_date.data
         homework.status = form.status.data
         db.session.commit()

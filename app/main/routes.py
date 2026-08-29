@@ -23,6 +23,8 @@ def dashboard():
     due_soon_homeworks = [h for h in homeworks if h.is_due_soon()]
     overdue_bills = [b for b in bills if b.is_overdue]
     due_soon_bills = [b for b in bills if b.is_due_soon()]
+    pending_homeworks = [h for h in homeworks if h.status == "pending"]
+    pending_bills = [b for b in bills if b.status == "unpaid"]
 
     return render_template(
         "main/dashboard.html",
@@ -30,6 +32,8 @@ def dashboard():
         due_soon_homeworks=due_soon_homeworks,
         overdue_bills=overdue_bills,
         due_soon_bills=due_soon_bills,
+        pending_homeworks=pending_homeworks,
+        pending_bills=pending_bills,
         pending_count=sum(1 for h in homeworks if h.status == "pending"),
         unpaid_count=sum(1 for b in bills if b.status == "unpaid"),
     )
