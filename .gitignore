@@ -8,3 +8,4 @@ instance/
 *.db
 .pytest_cache/
 .vscode/
+Documentación LaFimeLista.txt
