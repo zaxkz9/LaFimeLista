@@ -15,7 +15,7 @@ def test_register_and_login(client):
         "/auth/register",
         data={
             "name": "Test Student",
-            "email": "test@example.com",
+            "username": "teststudent",
             "password": "password123",
             "confirm_password": "password123",
         },

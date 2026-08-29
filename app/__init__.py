@@ -26,10 +26,12 @@ def create_app(config_name=None):
     from app.homeworks import homeworks_bp
     from app.bills import bills_bp
     from app.main import main_bp
+    from app.calendar import calendar_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(homeworks_bp, url_prefix="/homeworks")
     app.register_blueprint(bills_bp, url_prefix="/bills")
+    app.register_blueprint(calendar_bp, url_prefix="/calendar")
 
     return app

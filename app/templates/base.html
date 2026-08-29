@@ -14,6 +14,7 @@
       <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
       <a href="{{ url_for('homeworks.list_homeworks') }}">Tareas</a>
       <a href="{{ url_for('bills.list_bills') }}">Recibos</a>
+      <a href="{{ url_for('calendar.calendar_calendar')}}">Calendario</a>
       <a href="{{ url_for('auth.logout') }}">Cerrar sesión ({{ current_user.name }})</a>
     </nav>
     {% endif %}

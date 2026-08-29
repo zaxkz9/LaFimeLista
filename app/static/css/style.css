@@ -8,7 +8,6 @@
   --color-border: #D5DED8;
   --color-danger: #ff606e;
 }
-
 * { box-sizing: border-box; }
 
 body {
@@ -117,3 +116,82 @@ a {
   overflow: hidden;
   margin-bottom: 1rem;
 }
+
+/* Calendario */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-nav h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--color-border);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.calendar-weekday {
+  background: var(--color-surface);
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.calendar-day {
+  background: var(--color-surface);
+  min-height: 100px;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.calendar-day-outside {
+  background: var(--color-bg);
+}
+
+.calendar-day-number {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.calendar-day-today .calendar-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+}
+
+.calendar-item {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-item-tarea { background: var(--color-primary); }
+.calendar-item-recibo { background: #0891b2; }
+
+/* Deja el footer del dashboard separado de la sección de arriba */
+footer { margin-top: 2.5rem; }

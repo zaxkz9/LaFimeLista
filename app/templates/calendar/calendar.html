@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Calendario — LaFimeLista{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Calendario de pendientes</h1>
+</div>
+<p>Consulta todas las entregas de tareas y pagos de recibos programados de tu mes desde aquí.</p>
+
+<div class="calendar-nav">
+  <a class="btn" href="{{ url_for('calendar.calendar_calendar', year=year, month=prev_month) }}">&lsaquo; Mes anterior</a>
+  <h2>{{ month_name }} {{ year }}</h2>
+  <a class="btn" href="{{ url_for('calendar.calendar_calendar', year=year, month=next_month) }}">Mes siguiente &rsaquo;</a>
+</div>
+
+<div class="calendar-grid">
+  {% for d in dias_semana %}
+  <div class="calendar-weekday">{{ d }}</div>
+  {% endfor %}
+
+  {% for week in weeks %}
+    {% for day in week %}
+      {% if day == 0 %}
+      <div class="calendar-day calendar-day-outside"></div>
+      {% else %}
+      <div class="calendar-day{{ ' calendar-day-today' if (today.year == year and today.month == month and today.day == day) else '' }}">
+        <span class="calendar-day-number">{{ day }}</span>
+        {% for kind, label, title in items_by_day.get(day, []) %}
+        <span class="calendar-item calendar-item-{{ kind }}" title="{{ title }}">{{ label }}: {{ title }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</div>
+{% endblock %}
