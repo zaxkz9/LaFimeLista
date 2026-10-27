@@ -57,14 +57,6 @@ run.py          entry point
 
    Visit http://127.0.0.1:5000, register an account, and start logging homeworks and bills.
 
-## Tests
-
-```
-pytest
-```
-
-Tests run against an in-memory SQLite database (see `config.TestConfig`), so Postgres isn't required to run the test suite.
-
 ## Notes on scalability
 
 - New feature areas (e.g. a JSON API, notifications) can be added as new blueprints without touching existing ones.
